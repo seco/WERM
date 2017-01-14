@@ -14,6 +14,7 @@
  * RED LED: PWM strength of MOTOR 2
  */
 
+/*libraries*/
 #include <ESP8266WiFi.h>
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
@@ -51,6 +52,32 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 /*Feed*/
 Adafruit_MQTT_Subscribe testMotor1 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor1");
 Adafruit_MQTT_Subscribe testMotor2 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor2");
+/* FEED INFO (assuming using yomafacio's MQTT broker account):
+ * testMotor1:
+ *   slider that ranges from the values -1000 to 1000
+ *   controls motor 1
+ *   direction dictated by value
+ * testMotor2:
+ *   slider that ranges from the values -1000 to 1000
+ *   controls motor 2
+ *   direction dictated by value
+ * testForward:
+ *   toggle between ON and OFF
+ *   controls motor 1 and 2
+ *   both motors forward
+ * testBackward:
+ *   toggle between ON and OFF
+ *   controls motor 1 and 2
+ *   both motors backward
+ * testYawLeft:
+ *   toggle between ON and OFF
+ *   controls motor 1 and 2
+ *   motor 1 backward, motor 2 forward
+ * testYawRight:
+ *   toggle between ON and OFF
+ *   controls motor 1 and 2
+ *   motor 1 forward, motor 2 backward
+ */
 
 void setup() {
   // initialize pins
@@ -126,6 +153,8 @@ void loop() {
       }*/
       analogWrite(PWM_MOTOR2_PIN,speed_motor2);
     }
+
+    //add more feeds
   }
   
   // ping the server to keep the mqtt connection alive
