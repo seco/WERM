@@ -41,6 +41,9 @@
 #define PWM_MOTOR2_PIN 14 //GPIO14, or D5
 #define LEG1_MOTOR2_PIN 2 //GPIO2, or D4
 #define LEG2_MOTOR2_PIN 0 //GPIO0, or D3
+#define misc1 12
+#define misc2 13
+#define misc3 15
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
@@ -56,6 +59,8 @@ Adafruit_MQTT_Subscribe testMotor1 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME
 Adafruit_MQTT_Subscribe testMotor2 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor2");
 Adafruit_MQTT_Subscribe testForward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testForward");
 Adafruit_MQTT_Subscribe testBackward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testBackward");
+Adafruit_MQTT_Subscribe testYawLeft = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testYawLeft");
+Adafruit_MQTT_Subscribe testYawRight = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testYawRight");
 /* FEED INFO (assuming using yomafacio's MQTT broker account):
  * testMotor1:
  *   slider that ranges from the values -1000 to 1000
@@ -68,19 +73,23 @@ Adafruit_MQTT_Subscribe testBackward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNA
  *   controls motor 2
  *   direction dictated by value
  * testForward:
- *   toggle between ON and OFF
+ *   slider that ranges from the values 0 to 10000
+ *   values represent duration (milliseconds) of action
  *   controls motor 1 and 2
  *   both motors forward
  * testBackward:
- *   toggle between ON and OFF
+ *   slider that ranges from the values 0 to 10000
+ *   values represent duration (milliseconds) of action
  *   controls motor 1 and 2
  *   both motors backward
  * testYawLeft:
- *   toggle between ON and OFF
+ *   slider that ranges from the values 0 to 1000
+ *   values represent duration (milliseconds) of action
  *   controls motor 1 and 2
  *   motor 1 backward, motor 2 forward
  * testYawRight:
- *   toggle between ON and OFF
+ *   slider that ranges from the values 0 to 1000
+ *   values represent duration (milliseconds) of action
  *   controls motor 1 and 2
  *   motor 1 forward, motor 2 backward
  */
@@ -162,37 +171,58 @@ void loop() {
       }
       analogWrite(PWM_MOTOR2_PIN,speed_motor2);
     } else if (subscription == &testForward) {
-      Serial.print(F("testForward update status: "));
+      Serial.print(F("testForward update duration: "));
       Serial.println((char *)testForward.lastread);
+      int duration_forward = atoi((const char *)testForward.lastread);
       digitalWrite(LEG1_MOTOR1_PIN, LOW);
       digitalWrite(LEG2_MOTOR1_PIN, HIGH);
       digitalWrite(LEG1_MOTOR2_PIN, LOW);
       digitalWrite(LEG2_MOTOR2_PIN, HIGH);
-      if (strcmp((char *)testForward.lastread, "ON") == 0) {
-        analogWrite(PWM_MOTOR1_PIN, 1000);
-        analogWrite(PWM_MOTOR2_PIN, 1000);
-      }
-      if (strcmp((char *)testForward.lastread, "OFF") == 0) {
-        analogWrite(PWM_MOTOR1_PIN, 0);
-        analogWrite(PWM_MOTOR2_PIN, 0);
-      }
+      analogWrite(PWM_MOTOR1_PIN, 1000);
+      analogWrite(PWM_MOTOR2_PIN, 1000);
+      delay(duration_forward);
+      analogWrite(PWM_MOTOR1_PIN, 0);
+      analogWrite(PWM_MOTOR2_PIN, 0);
     } else if (subscription == &testBackward) {
-      Serial.print(F("testBackward update status: "));
+      Serial.print(F("testBackward update duration: "));
       Serial.println((char *)testBackward.lastread);
+      int duration_backward = atoi((const char *)testBackward.lastread);
       digitalWrite(LEG1_MOTOR1_PIN, HIGH);
       digitalWrite(LEG2_MOTOR1_PIN, LOW);
       digitalWrite(LEG1_MOTOR2_PIN, HIGH);
       digitalWrite(LEG2_MOTOR2_PIN, LOW);
-      if (strcmp((char *)testBackward.lastread, "ON") == 0) {
-        analogWrite(PWM_MOTOR1_PIN, 1000);
-        analogWrite(PWM_MOTOR2_PIN, 1000);
-      }
-      if (strcmp((char *)testForward.lastread, "OFF") == 0) {
-        analogWrite(PWM_MOTOR1_PIN, 0);
-        analogWrite(PWM_MOTOR2_PIN, 0);
-      }
+      analogWrite(PWM_MOTOR1_PIN, 1000);
+      analogWrite(PWM_MOTOR2_PIN, 1000);
+      delay(duration_backward);
+      analogWrite(PWM_MOTOR1_PIN, 0);
+      analogWrite(PWM_MOTOR2_PIN, 0);
+    } else if (subscription == &testYawLeft) {
+      Serial.print(F("testYawLeft update duration: "));
+      Serial.println((char *)testYawLeft.lastread);
+      int duration_left = atoi((const char *)testYawLeft.lastread);
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);
+      digitalWrite(LEG2_MOTOR1_PIN, HIGH);
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
+      digitalWrite(LEG2_MOTOR2_PIN, LOW);
+      analogWrite(PWM_MOTOR1_PIN, 1000);
+      analogWrite(PWM_MOTOR2_PIN, 1000);
+      delay(duration_left);
+      analogWrite(PWM_MOTOR1_PIN, 0);
+      analogWrite(PWM_MOTOR2_PIN, 0);
+    } else if (subscription == &testYawRight) {
+      Serial.print(F("testYawRight update duration: "));
+      Serial.println((char *)testYawRight.lastread);
+      int duration_right = atoi((const char *)testYawRight.lastread);
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
+      digitalWrite(LEG2_MOTOR1_PIN, LOW);
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);
+      digitalWrite(LEG2_MOTOR2_PIN, HIGH);
+      analogWrite(PWM_MOTOR1_PIN, 1000);
+      analogWrite(PWM_MOTOR2_PIN, 1000);
+      delay(duration_right);
+      analogWrite(PWM_MOTOR1_PIN, 0);
+      analogWrite(PWM_MOTOR2_PIN, 0);
     }
-
   }
   
   // ping the server to keep the mqtt connection alive
