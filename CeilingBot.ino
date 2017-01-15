@@ -1,4 +1,4 @@
-//Code created by Oliver Wang
+//Code created by yomafacio
 
 /* CLIP CONNECTIONS
  * column 1, lower: common ground
