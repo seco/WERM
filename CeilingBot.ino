@@ -1,3 +1,5 @@
+//Code created by Oliver Wang
+
 /* CLIP CONNECTIONS
  * column 1, lower: common ground
  * column 23, upper: 4.5V DC in
@@ -52,13 +54,17 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 /*Feed*/
 Adafruit_MQTT_Subscribe testMotor1 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor1");
 Adafruit_MQTT_Subscribe testMotor2 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor2");
+Adafruit_MQTT_Subscribe testForward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testForward");
+Adafruit_MQTT_Subscribe testBackward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testBackward");
 /* FEED INFO (assuming using yomafacio's MQTT broker account):
  * testMotor1:
  *   slider that ranges from the values -1000 to 1000
+ *   values between -100 and 100 are counted as zero
  *   controls motor 1
  *   direction dictated by value
  * testMotor2:
  *   slider that ranges from the values -1000 to 1000
+ *   values between -100 and 100 are counted as zero
  *   controls motor 2
  *   direction dictated by value
  * testForward:
@@ -120,41 +126,73 @@ void loop() {
   // this is our 'wait for incoming subscription packets' busy subloop
   Adafruit_MQTT_Subscribe *subscription;
   while ((subscription = mqtt.readSubscription(5000))) {
-    // Check if it's the testMotor1 feed
+    //note: using a switch loop does not work, must use if/else
     if (subscription == &testMotor1) {
-      Serial.print(F("Motor1: "));
+      Serial.print(F("testMotor1 update speed: "));
       Serial.println((char *)testMotor1.lastread);
-      
       int speed_motor1 = atoi((const char *)testMotor1.lastread);
+      if (speed_motor1 < 100 && speed_motor1 > -100) {
+        speed_motor1 = 0;
+        Serial.println("motor1 speed set as zero since -100 < input < 100");
+      }
       if(speed_motor1 > 0) {
         digitalWrite(LEG1_MOTOR1_PIN, LOW);
         digitalWrite(LEG2_MOTOR1_PIN, HIGH);
-      }/* else {
+      } else {
         digitalWrite(LEG1_MOTOR1_PIN, HIGH);
         digitalWrite(LEG2_MOTOR1_PIN, LOW);
         speed_motor1 = -speed_motor1;
-      }*/
+      }
       analogWrite(PWM_MOTOR1_PIN,speed_motor1);
-    }
-    
-    // Check if it's the testMotor2 feed
-    if (subscription == &testMotor2) {
-      Serial.print(F("Motor2: "));
+    } else if (subscription == &testMotor2) {
+      Serial.print(F("testMotor2 update speed: "));
       Serial.println((char *)testMotor2.lastread);
-      
       int speed_motor2 = atoi((const char *)testMotor2.lastread);
+      if (speed_motor2 < 100 && speed_motor2 > -100) {
+        speed_motor2 = 0;
+        Serial.println("motor2 speed set as zero since -100 < input < 100");
+      }
       if(speed_motor2 > 0) {
         digitalWrite(LEG1_MOTOR2_PIN, LOW);
         digitalWrite(LEG2_MOTOR2_PIN, HIGH);
-      }/* else {
+      } else {
         digitalWrite(LEG1_MOTOR2_PIN, HIGH);
         digitalWrite(LEG2_MOTOR2_PIN, LOW);
         speed_motor2 = -speed_motor2;
-      }*/
+      }
       analogWrite(PWM_MOTOR2_PIN,speed_motor2);
+    } else if (subscription == &testForward) {
+      Serial.print(F("testForward update status: "));
+      Serial.println((char *)testForward.lastread);
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);
+      digitalWrite(LEG2_MOTOR1_PIN, HIGH);
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);
+      digitalWrite(LEG2_MOTOR2_PIN, HIGH);
+      if (strcmp((char *)testForward.lastread, "ON") == 0) {
+        analogWrite(PWM_MOTOR1_PIN, 1000);
+        analogWrite(PWM_MOTOR2_PIN, 1000);
+      }
+      if (strcmp((char *)testForward.lastread, "OFF") == 0) {
+        analogWrite(PWM_MOTOR1_PIN, 0);
+        analogWrite(PWM_MOTOR2_PIN, 0);
+      }
+    } else if (subscription == &testBackward) {
+      Serial.print(F("testBackward update status: "));
+      Serial.println((char *)testBackward.lastread);
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
+      digitalWrite(LEG2_MOTOR1_PIN, LOW);
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
+      digitalWrite(LEG2_MOTOR2_PIN, LOW);
+      if (strcmp((char *)testBackward.lastread, "ON") == 0) {
+        analogWrite(PWM_MOTOR1_PIN, 1000);
+        analogWrite(PWM_MOTOR2_PIN, 1000);
+      }
+      if (strcmp((char *)testForward.lastread, "OFF") == 0) {
+        analogWrite(PWM_MOTOR1_PIN, 0);
+        analogWrite(PWM_MOTOR2_PIN, 0);
+      }
     }
 
-    //add more feeds
   }
   
   // ping the server to keep the mqtt connection alive
