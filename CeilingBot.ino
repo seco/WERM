@@ -1,13 +1,13 @@
 //Code created by yomafacio
 
 /* CLIP CONNECTIONS
- * column 1, lower: common ground
- * column 23, upper: 4.5V DC in
- * column 39, lower: 12V DC in
- * column 45, lower: DC motor 1, negative
- * column 45, upper: DC motor 2, negative
- * column 50, lower: DC motor 1, positive
- * column 50, upper: DC motor 2, positive
+ * row Y: common ground
+ * row W: 4.5V DC in
+ * row Z: 12V DC in
+ * column 31, lower: DC motor 1, negative
+ * column 31, upper: DC motor 2, negative
+ * column 33, lower: DC motor 1, positive
+ * column 33, upper: DC motor 2, positive
  */
 
 /* NOTES
