@@ -123,6 +123,10 @@ void setup() {
   //Setup the MQTT subscription
   mqtt.subscribe(&testMotor1);
   mqtt.subscribe(&testMotor2);
+  mqtt.subscribe(&testForward);
+  mqtt.subscribe(&testBackward);
+  mqtt.subscribe(&testYawLeft);
+  mqtt.subscribe(&testYawRight);
 }
 
 void loop() { 
