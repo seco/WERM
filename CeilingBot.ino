@@ -31,17 +31,17 @@
 /*MQTT*/
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883                   // use 8883 for SSL
-#define AIO_USERNAME    "yomafacio"
-#define AIO_KEY         "29cc2bb000f14985a994cb093d27d779"
+#define AIO_USERNAME    "CeilingBot"
+#define AIO_KEY         "f93aa0c6bcd04926b790004d481e3000"
 
 /*Pin Definitions*/
 #define PWM_MOTOR1_PIN 4 //GPIO4, or D2
 #define LEG1_MOTOR1_PIN 5 //GPIO5, or D1
-#define LEG2_MOTOR1_PIN 16 //GPIO16, or D0
+#define LEG2_MOTOR1_PIN 12 //GPIO12, or D6
 #define PWM_MOTOR2_PIN 14 //GPIO14, or D5
 #define LEG1_MOTOR2_PIN 2 //GPIO2, or D4
 #define LEG2_MOTOR2_PIN 0 //GPIO0, or D3
-#define misc1 12
+#define misc1 16
 #define misc2 13
 #define misc3 15
 
