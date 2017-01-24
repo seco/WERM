@@ -34,16 +34,17 @@
 #define AIO_USERNAME    "CeilingBot"
 #define AIO_KEY         "f93aa0c6bcd04926b790004d481e3000"
 
+/*
+ * working pins:
+ * GPIO13, GPIO5, GPIO2, GPIO0
+ */
+
 /*Pin Definitions*/
-#define PWM_MOTOR1_PIN 4 //GPIO4, or D2
-#define LEG1_MOTOR1_PIN 5 //GPIO5, or D1
-#define LEG2_MOTOR1_PIN 12 //GPIO12, or D6
-#define PWM_MOTOR2_PIN 14 //GPIO14, or D5
+#define PWM_MOTOR_PIN 4 //GPIO4, or D2
+#define LEG1_MOTOR1_PIN 0 //GPIO5, or D1
 #define LEG1_MOTOR2_PIN 2 //GPIO2, or D4
-#define LEG2_MOTOR2_PIN 0 //GPIO0, or D3
-#define misc1 16
-#define misc2 13
-#define misc3 15
+#define COMMON_LEG2_PIN 0 //GPIO0, or D3
+
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
