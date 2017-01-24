@@ -23,6 +23,7 @@ Figure 2: Custom MQTT enabled methods for dual actuator drive
 ##Setup the Project
 ###MQTT Broker
 The current build uses io.adafruit.com as the MQTT broker. Below is a table with all of the dashboard blocks already implemented.
+
 | Block Name (Feed Name is Same) | Type   | Min Value | Max Value | Step | Value Interpretation |
 |--------------------------------|--------|-----------|-----------|------|----------------------|
 | testMotor1                     | Slider | -1000     | 1000      | 10   | d% PWM Duty Cycle    |
@@ -31,6 +32,7 @@ The current build uses io.adafruit.com as the MQTT broker. Below is a table with
 | testBackward                   | Slider | 0         | 10000     | 10   | Milliseconds (mS)    |
 | testYawLeft                    | Slider | 0         | 1000      | 10   | Milliseconds (mS)    |
 | testYawRight                   | Slider | 0         | 1000      | 10   | Milliseconds (mS)    |
+Figure 3: Current build blocks
 Within CeilingBot.ino, near the top under '/**MQTT**/', the MQTT account can be edited. To link your account, edit the server, username, and key variables. After editting this in the MQTT protocol side of the project will be operational.
 ###Wifi
 Within CeilingBot.ino, near the top under '/**WIFI**/', add the details for a local wifi details by editing the variables for SSID and password.
