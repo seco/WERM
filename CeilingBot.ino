@@ -1,5 +1,3 @@
-//Code created by yomafacio
-
 /* CLIP CONNECTIONS
  * row Y: common ground
  * row W: 4.5V DC in
@@ -10,47 +8,29 @@
  * column 33, upper: DC motor 2, positive
  */
 
-/* NOTES
- * yellow wire: REPLACE with resistor!!!
- * GREEN LED: PWM strength of MOTOR 1
- * RED LED: PWM strength of MOTOR 2
- */
-
 /*libraries*/
 #include <ESP8266WiFi.h>
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
 
 /*Wifi*/
-//#define WLAN_SSID       "NETGEAR47"
-//#define WLAN_PASS       "unusualearth866"
-
 #define WLAN_SSID       "guest-SDUHSD"
 #define WLAN_PASS       ""
 
 /*MQTT*/
 #define AIO_SERVER      "io.adafruit.com"
-#define AIO_SERVERPORT  1883                   // use 8883 for SSL
+#define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "CeilingBot"
 #define AIO_KEY         "f93aa0c6bcd04926b790004d481e3000"
 
-/*
- * working pins:
- * GPIO13, GPIO5, GPIO2, GPIO0
- */
-
 /*Pin Definitions*/
-#define PWM_MOTOR_PIN 4 //GPIO4, or D2
-#define LEG1_MOTOR1_PIN 0 //GPIO5, or D1
-#define LEG1_MOTOR2_PIN 2 //GPIO2, or D4
-#define COMMON_LEG2_PIN 0 //GPIO0, or D3
-
+#define PWM_MOTOR_PIN 0 //GPIO0, or D3
+#define LEG1_MOTOR1_PIN 2 //GPIO2, or D4
+#define LEG1_MOTOR2_PIN 5 //GPIO5, or D1
+#define COMMON_LEG2_PIN 13 //GPIO13, or D7
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
-
-// or... use WiFiFlientSecure for SSL
-//WiFiClientSecure client;
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_USERNAME, AIO_KEY);
@@ -97,12 +77,10 @@ Adafruit_MQTT_Subscribe testYawRight = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNA
 
 void setup() {
   // initialize pins
-  pinMode(PWM_MOTOR1_PIN, OUTPUT);
+  pinMode(PWM_MOTOR_PIN, OUTPUT);
   pinMode(LEG1_MOTOR1_PIN, OUTPUT);
-  pinMode(LEG1_MOTOR1_PIN, OUTPUT);
-  pinMode(PWM_MOTOR2_PIN, OUTPUT);
   pinMode(LEG1_MOTOR2_PIN, OUTPUT);
-  pinMode(LEG1_MOTOR2_PIN, OUTPUT);
+  pinMode(COMMON_LEG2_PIN, OUTPUT);
   
   Serial.begin(9600);
 
@@ -150,14 +128,14 @@ void loop() {
         Serial.println("motor1 speed set as zero since -100 < input < 100");
       }
       if(speed_motor1 > 0) {
-        digitalWrite(LEG1_MOTOR1_PIN, LOW);
-        digitalWrite(LEG2_MOTOR1_PIN, HIGH);
-      } else {
         digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-        digitalWrite(LEG2_MOTOR1_PIN, LOW);
+        digitalWrite(COMMON_LEG2_PIN, LOW);
+      } else {
+        digitalWrite(LEG1_MOTOR1_PIN, LOW);
+        digitalWrite(COMMON_LEG2_PIN, HIGH);
         speed_motor1 = -speed_motor1;
       }
-      analogWrite(PWM_MOTOR1_PIN,speed_motor1);
+      analogWrite(PWM_MOTOR_PIN,speed_motor1);
     } else if (subscription == &testMotor2) {
       Serial.print(F("testMotor2 update speed: "));
       Serial.println((char *)testMotor2.lastread);
@@ -167,66 +145,54 @@ void loop() {
         Serial.println("motor2 speed set as zero since -100 < input < 100");
       }
       if(speed_motor2 > 0) {
-        digitalWrite(LEG1_MOTOR2_PIN, LOW);
-        digitalWrite(LEG2_MOTOR2_PIN, HIGH);
-      } else {
         digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-        digitalWrite(LEG2_MOTOR2_PIN, LOW);
+        digitalWrite(COMMON_LEG2_PIN, LOW);
+      } else {
+        digitalWrite(LEG1_MOTOR2_PIN, LOW);
+        digitalWrite(COMMON_LEG2_PIN, HIGH);
         speed_motor2 = -speed_motor2;
       }
-      analogWrite(PWM_MOTOR2_PIN,speed_motor2);
+      analogWrite(PWM_MOTOR_PIN,speed_motor2);
     } else if (subscription == &testForward) {
       Serial.print(F("testForward update duration: "));
       Serial.println((char *)testForward.lastread);
       int duration_forward = atoi((const char *)testForward.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, LOW);
-      digitalWrite(LEG2_MOTOR1_PIN, HIGH);
-      digitalWrite(LEG1_MOTOR2_PIN, LOW);
-      digitalWrite(LEG2_MOTOR2_PIN, HIGH);
-      analogWrite(PWM_MOTOR1_PIN, 1000);
-      analogWrite(PWM_MOTOR2_PIN, 1000);
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
+      digitalWrite(COMMON_LEG2_PIN, LOW);
+      analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_forward);
-      analogWrite(PWM_MOTOR1_PIN, 0);
-      analogWrite(PWM_MOTOR2_PIN, 0);
+      analogWrite(PWM_MOTOR_PIN, 0);
     } else if (subscription == &testBackward) {
       Serial.print(F("testBackward update duration: "));
       Serial.println((char *)testBackward.lastread);
       int duration_backward = atoi((const char *)testBackward.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-      digitalWrite(LEG2_MOTOR1_PIN, LOW);
-      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-      digitalWrite(LEG2_MOTOR2_PIN, LOW);
-      analogWrite(PWM_MOTOR1_PIN, 1000);
-      analogWrite(PWM_MOTOR2_PIN, 1000);
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);
+      digitalWrite(COMMON_LEG2_PIN, HIGH);
+      analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_backward);
-      analogWrite(PWM_MOTOR1_PIN, 0);
-      analogWrite(PWM_MOTOR2_PIN, 0);
+      analogWrite(PWM_MOTOR_PIN, 0);
     } else if (subscription == &testYawLeft) {
       Serial.print(F("testYawLeft update duration: "));
       Serial.println((char *)testYawLeft.lastread);
       int duration_left = atoi((const char *)testYawLeft.lastread);
       digitalWrite(LEG1_MOTOR1_PIN, LOW);
-      digitalWrite(LEG2_MOTOR1_PIN, HIGH);
       digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-      digitalWrite(LEG2_MOTOR2_PIN, LOW);
-      analogWrite(PWM_MOTOR1_PIN, 1000);
-      analogWrite(PWM_MOTOR2_PIN, 1000);
+      digitalWrite(COMMON_LEG2_PIN, LOW);
+      analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_left);
-      analogWrite(PWM_MOTOR1_PIN, 0);
-      analogWrite(PWM_MOTOR2_PIN, 0);
+      analogWrite(PWM_MOTOR_PIN, 0);
     } else if (subscription == &testYawRight) {
       Serial.print(F("testYawRight update duration: "));
       Serial.println((char *)testYawRight.lastread);
       int duration_right = atoi((const char *)testYawRight.lastread);
       digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-      digitalWrite(LEG2_MOTOR1_PIN, LOW);
       digitalWrite(LEG1_MOTOR2_PIN, LOW);
-      digitalWrite(LEG2_MOTOR2_PIN, HIGH);
-      analogWrite(PWM_MOTOR1_PIN, 1000);
-      analogWrite(PWM_MOTOR2_PIN, 1000);
+      digitalWrite(COMMON_LEG2_PIN, LOW);
+      analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_right);
-      analogWrite(PWM_MOTOR1_PIN, 0);
-      analogWrite(PWM_MOTOR2_PIN, 0);
+      analogWrite(PWM_MOTOR_PIN, 0);
     }
   }
   
