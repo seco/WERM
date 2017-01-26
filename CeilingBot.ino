@@ -14,8 +14,10 @@
 #include "Adafruit_MQTT_Client.h"
 
 /*Wifi*/
-#define WLAN_SSID       "guest-SDUHSD"
-#define WLAN_PASS       ""
+//#define WLAN_SSID       "guest-SDUHSD"
+//#define WLAN_PASS       ""
+#define WLAN_SSID       "NETGEAR47"
+#define WLAN_PASS       "unusualearth866"
 
 /*MQTT*/
 #define AIO_SERVER      "io.adafruit.com"
