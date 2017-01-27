@@ -14,10 +14,10 @@
 #include "Adafruit_MQTT_Client.h"
 
 /*Wifi*/
-//#define WLAN_SSID       "guest-SDUHSD"
-//#define WLAN_PASS       ""
-#define WLAN_SSID       "NETGEAR47"
-#define WLAN_PASS       "unusualearth866"
+#define WLAN_SSID       "guest-SDUHSD"
+#define WLAN_PASS       ""
+//#define WLAN_SSID       "NETGEAR47"
+//#define WLAN_PASS       "unusualearth866"
 
 /*MQTT*/
 #define AIO_SERVER      "io.adafruit.com"
@@ -78,6 +78,7 @@ Adafruit_MQTT_Subscribe testYawRight = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNA
  */
 
 void setup() {
+  
   // initialize pins
   pinMode(PWM_MOTOR_PIN, OUTPUT);
   pinMode(LEG1_MOTOR1_PIN, OUTPUT);
