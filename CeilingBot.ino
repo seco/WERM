@@ -132,9 +132,11 @@ void loop() {
       }
       if(speed_motor1 > 0) {
         digitalWrite(LEG1_MOTOR1_PIN, HIGH);
+        digitalWrite(LEG1_MOTOR2_PIN, LOW);
         digitalWrite(COMMON_LEG2_PIN, LOW);
       } else {
         digitalWrite(LEG1_MOTOR1_PIN, LOW);
+        digitalWrite(LEG1_MOTOR2_PIN, HIGH);
         digitalWrite(COMMON_LEG2_PIN, HIGH);
         speed_motor1 = -speed_motor1;
       }
@@ -148,9 +150,11 @@ void loop() {
         Serial.println("motor2 speed set as zero since -100 < input < 100");
       }
       if(speed_motor2 > 0) {
+        digitalWrite(LEG1_MOTOR1_PIN, LOW);
         digitalWrite(LEG1_MOTOR2_PIN, HIGH);
         digitalWrite(COMMON_LEG2_PIN, LOW);
       } else {
+        digitalWrite(LEG1_MOTOR1_PIN, HIGH);
         digitalWrite(LEG1_MOTOR2_PIN, LOW);
         digitalWrite(COMMON_LEG2_PIN, HIGH);
         speed_motor2 = -speed_motor2;
