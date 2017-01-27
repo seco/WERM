@@ -35,7 +35,7 @@
  */
 
 //METHOD TO RUN (refer above for constant names)
-int method = 2;
+int method = 1;
 
 void setup() {
   // initialize pins
