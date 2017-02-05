@@ -113,12 +113,10 @@ void setup() {
 
 void loop() { 
 
-  // Ensure the connection to the MQTT server is alive (this will make the first
-  // connection and automatically reconnect when disconnected).  See the MQTT_connect
-  // function definition further below.
+  //ensure the connection to the MQTT server is alive
   MQTT_connect();
 
-  // this is our 'wait for incoming subscription packets' busy subloop
+  //wait for incoming subscription packets subloop
   Adafruit_MQTT_Subscribe *subscription;
   while ((subscription = mqtt.readSubscription(5000))) {
     //note: using a switch loop does not work, must use if/else
@@ -141,6 +139,7 @@ void loop() {
         speed_motor1 = -speed_motor1;
       }
       analogWrite(PWM_MOTOR_PIN,speed_motor1);
+      bufferNull();
     } else if (subscription == &testMotor2) {
       Serial.print(F("testMotor2 update speed: "));
       Serial.println((char *)testMotor2.lastread);
@@ -160,6 +159,7 @@ void loop() {
         speed_motor2 = -speed_motor2;
       }
       analogWrite(PWM_MOTOR_PIN,speed_motor2);
+      bufferNull();
     } else if (subscription == &testForward) {
       Serial.print(F("testForward update duration: "));
       Serial.println((char *)testForward.lastread);
@@ -170,6 +170,7 @@ void loop() {
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_forward);
       analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
     } else if (subscription == &testBackward) {
       Serial.print(F("testBackward update duration: "));
       Serial.println((char *)testBackward.lastread);
@@ -180,6 +181,7 @@ void loop() {
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_backward);
       analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
     } else if (subscription == &testYawLeft) {
       Serial.print(F("testYawLeft update duration: "));
       Serial.println((char *)testYawLeft.lastread);
@@ -190,6 +192,7 @@ void loop() {
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_left);
       analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
     } else if (subscription == &testYawRight) {
       Serial.print(F("testYawRight update duration: "));
       Serial.println((char *)testYawRight.lastread);
@@ -200,6 +203,7 @@ void loop() {
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_right);
       analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
     }
   }
   
@@ -210,9 +214,16 @@ void loop() {
 
 } //end loop()
 
+//function to null output values as necessary to prevent short circuits
+void bufferNull() {
+  digitalWrite(LEG1_MOTOR1_PIN, LOW);
+  digitalWrite(LEG1_MOTOR2_PIN, LOW);
+  digitalWrite(COMMON_LEG2_PIN, LOW);
+  analogWrite(PWM_MOTOR_PIN, 0);
+  delay(500);
+}
 
-// Function to connect and reconnect as necessary to the MQTT server.
-// Should be called in the loop function and it will take care if connecting.
+// function to connect and reconnect as necessary to the MQTT server.
 void MQTT_connect() {
   int8_t ret;
 
