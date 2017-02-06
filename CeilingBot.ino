@@ -51,14 +51,16 @@ void loop() {
   digitalWrite(LEG1_MOTOR2_PIN, LOW);
   digitalWrite(COMMON_LEG2_PIN, LOW);
   analogWrite(PWM_MOTOR_PIN, 1000);
+  delay(5000);
   bufferNull();
 }
 
 void bufferNull() {
+  Serial.println("buffering...");
   digitalWrite(LEG1_MOTOR1_PIN, LOW);
   digitalWrite(LEG1_MOTOR2_PIN, LOW);
   digitalWrite(COMMON_LEG2_PIN, LOW);
   analogWrite(PWM_MOTOR_PIN, 0);
-  delay(500);
+  delay(2000);
 }
 
