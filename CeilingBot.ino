@@ -186,8 +186,8 @@ void loop() {
       Serial.print(F("testYawLeft update duration: "));
       Serial.println((char *)testYawLeft.lastread);
       int duration_left = atoi((const char *)testYawLeft.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, LOW);
-      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);
       digitalWrite(COMMON_LEG2_PIN, LOW);
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_left);
@@ -197,8 +197,8 @@ void loop() {
       Serial.print(F("testYawRight update duration: "));
       Serial.println((char *)testYawRight.lastread);
       int duration_right = atoi((const char *)testYawRight.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-      digitalWrite(LEG1_MOTOR2_PIN, LOW);
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
       digitalWrite(COMMON_LEG2_PIN, LOW);
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_right);
