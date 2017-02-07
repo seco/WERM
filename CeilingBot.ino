@@ -38,23 +38,11 @@ WiFiClient client;
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_USERNAME, AIO_KEY);
 
 /*Feed*/
-Adafruit_MQTT_Subscribe testMotor1 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor1");
-Adafruit_MQTT_Subscribe testMotor2 = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testMotor2");
 Adafruit_MQTT_Subscribe testForward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testForward");
 Adafruit_MQTT_Subscribe testBackward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testBackward");
 Adafruit_MQTT_Subscribe testYawLeft = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testYawLeft");
 Adafruit_MQTT_Subscribe testYawRight = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testYawRight");
 /* FEED INFO (assuming using yomafacio's MQTT broker account):
- * testMotor1:
- *   slider that ranges from the values -1000 to 1000
- *   values between -100 and 100 are counted as zero
- *   controls motor 1
- *   direction dictated by value
- * testMotor2:
- *   slider that ranges from the values -1000 to 1000
- *   values between -100 and 100 are counted as zero
- *   controls motor 2
- *   direction dictated by value
  * testForward:
  *   slider that ranges from the values 0 to 10000
  *   values represent duration (milliseconds) of action
@@ -103,8 +91,6 @@ void setup() {
   Serial.println("IP address: "); Serial.println(WiFi.localIP());
   
   //Setup the MQTT subscription
-  mqtt.subscribe(&testMotor1);
-  mqtt.subscribe(&testMotor2);
   mqtt.subscribe(&testForward);
   mqtt.subscribe(&testBackward);
   mqtt.subscribe(&testYawLeft);
@@ -120,47 +106,7 @@ void loop() {
   Adafruit_MQTT_Subscribe *subscription;
   while ((subscription = mqtt.readSubscription(5000))) {
     //note: using a switch loop does not work, must use if/else
-    if (subscription == &testMotor1) {
-      Serial.print(F("testMotor1 update speed: "));
-      Serial.println((char *)testMotor1.lastread);
-      int speed_motor1 = atoi((const char *)testMotor1.lastread);
-      if (speed_motor1 < 100 && speed_motor1 > -100) {
-        speed_motor1 = 0;
-        Serial.println("motor1 speed set as zero since -100 < input < 100");
-      }
-      if(speed_motor1 > 0) {
-        digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-        digitalWrite(LEG1_MOTOR2_PIN, LOW);
-        digitalWrite(COMMON_LEG2_PIN, LOW);
-      } else {
-        digitalWrite(LEG1_MOTOR1_PIN, LOW);
-        digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-        digitalWrite(COMMON_LEG2_PIN, HIGH);
-        speed_motor1 = -speed_motor1;
-      }
-      analogWrite(PWM_MOTOR_PIN,speed_motor1);
-      bufferNull();
-    } else if (subscription == &testMotor2) {
-      Serial.print(F("testMotor2 update speed: "));
-      Serial.println((char *)testMotor2.lastread);
-      int speed_motor2 = atoi((const char *)testMotor2.lastread);
-      if (speed_motor2 < 100 && speed_motor2 > -100) {
-        speed_motor2 = 0;
-        Serial.println("motor2 speed set as zero since -100 < input < 100");
-      }
-      if(speed_motor2 > 0) {
-        digitalWrite(LEG1_MOTOR1_PIN, LOW);
-        digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-        digitalWrite(COMMON_LEG2_PIN, LOW);
-      } else {
-        digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-        digitalWrite(LEG1_MOTOR2_PIN, LOW);
-        digitalWrite(COMMON_LEG2_PIN, HIGH);
-        speed_motor2 = -speed_motor2;
-      }
-      analogWrite(PWM_MOTOR_PIN,speed_motor2);
-      bufferNull();
-    } else if (subscription == &testForward) {
+    if (subscription == &testForward) {
       Serial.print(F("testForward update duration: "));
       Serial.println((char *)testForward.lastread);
       int duration_forward = atoi((const char *)testForward.lastread);
