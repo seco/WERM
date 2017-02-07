@@ -26,30 +26,30 @@ void setup() {
 
 void loop() { 
   Serial.println("testForward Initiating...");
-  digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-  digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-  digitalWrite(COMMON_LEG2_PIN, LOW);
+  digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+  digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+  digitalWrite(COMMON_LEG2_PIN, HIGH);  //high
   analogWrite(PWM_MOTOR_PIN, 1000);
   delay(5000);
   bufferNull();
   Serial.println("testBackward Initiating...");
-  digitalWrite(LEG1_MOTOR1_PIN, LOW);
-  digitalWrite(LEG1_MOTOR2_PIN, LOW);
-  digitalWrite(COMMON_LEG2_PIN, HIGH);
+  digitalWrite(LEG1_MOTOR1_PIN, LOW);  //high
+  digitalWrite(LEG1_MOTOR2_PIN, LOW);  //high
+  digitalWrite(COMMON_LEG2_PIN, LOW); //low
   analogWrite(PWM_MOTOR_PIN, 1000);
   delay(5000);
   bufferNull();
   Serial.println("testYawLeft Initiating...");
-  digitalWrite(LEG1_MOTOR1_PIN, LOW);
-  digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-  digitalWrite(COMMON_LEG2_PIN, LOW);
+  digitalWrite(LEG1_MOTOR1_PIN, LOW);  //high
+  digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+  digitalWrite(COMMON_LEG2_PIN, LOW);  //low
   analogWrite(PWM_MOTOR_PIN, 1000);
   delay(5000);
   bufferNull();
   Serial.println("testYawRight Initating...");
-  digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-  digitalWrite(LEG1_MOTOR2_PIN, LOW);
-  digitalWrite(COMMON_LEG2_PIN, LOW);
+  digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+  digitalWrite(LEG1_MOTOR2_PIN, LOW);  //high
+  digitalWrite(COMMON_LEG2_PIN, LOW);  //low
   analogWrite(PWM_MOTOR_PIN, 1000);
   delay(5000);
   bufferNull();
@@ -57,10 +57,11 @@ void loop() {
 
 void bufferNull() {
   Serial.println("buffering...");
-  digitalWrite(LEG1_MOTOR1_PIN, LOW);
-  digitalWrite(LEG1_MOTOR2_PIN, LOW);
-  digitalWrite(COMMON_LEG2_PIN, LOW);
+  digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+  digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+  digitalWrite(COMMON_LEG2_PIN, LOW); //low
   analogWrite(PWM_MOTOR_PIN, 0);
   delay(2000);
+  Serial.println("stop buffering...");
 }
 
