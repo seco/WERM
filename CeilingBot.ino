@@ -164,9 +164,9 @@ void loop() {
       Serial.print(F("testForward update duration: "));
       Serial.println((char *)testForward.lastread);
       int duration_forward = atoi((const char *)testForward.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-      digitalWrite(COMMON_LEG2_PIN, LOW);
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+      digitalWrite(COMMON_LEG2_PIN, HIGH); //high
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_forward);
       analogWrite(PWM_MOTOR_PIN, 0);
@@ -175,9 +175,9 @@ void loop() {
       Serial.print(F("testBackward update duration: "));
       Serial.println((char *)testBackward.lastread);
       int duration_backward = atoi((const char *)testBackward.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, LOW);
-      digitalWrite(LEG1_MOTOR2_PIN, LOW);
-      digitalWrite(COMMON_LEG2_PIN, HIGH);
+      digitalWrite(LEG1_MOTOR1_PIN, LOW); //high
+      digitalWrite(LEG1_MOTOR2_PIN, LOW); //high
+      digitalWrite(COMMON_LEG2_PIN, LOW); //low
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_backward);
       analogWrite(PWM_MOTOR_PIN, 0);
@@ -186,9 +186,9 @@ void loop() {
       Serial.print(F("testYawLeft update duration: "));
       Serial.println((char *)testYawLeft.lastread);
       int duration_left = atoi((const char *)testYawLeft.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, HIGH);
-      digitalWrite(LEG1_MOTOR2_PIN, LOW);
-      digitalWrite(COMMON_LEG2_PIN, LOW);
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);  //high
+      digitalWrite(COMMON_LEG2_PIN, LOW);  //low
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_left);
       analogWrite(PWM_MOTOR_PIN, 0);
@@ -197,9 +197,9 @@ void loop() {
       Serial.print(F("testYawRight update duration: "));
       Serial.println((char *)testYawRight.lastread);
       int duration_right = atoi((const char *)testYawRight.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, LOW);
-      digitalWrite(LEG1_MOTOR2_PIN, HIGH);
-      digitalWrite(COMMON_LEG2_PIN, LOW);
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);  //high
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+      digitalWrite(COMMON_LEG2_PIN, LOW);  //low
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_right);
       analogWrite(PWM_MOTOR_PIN, 0);
@@ -216,11 +216,14 @@ void loop() {
 
 //function to null output values as necessary to prevent short circuits
 void bufferNull() {
-  digitalWrite(LEG1_MOTOR1_PIN, LOW);
-  digitalWrite(LEG1_MOTOR2_PIN, LOW);
-  digitalWrite(COMMON_LEG2_PIN, LOW);
+  Serial.println("buffering");
+  digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+  digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+  digitalWrite(COMMON_LEG2_PIN, LOW); //low
   analogWrite(PWM_MOTOR_PIN, 0);
-  delay(500);
+  delay(2000);
+  Serial.println("end buffering");
+  
 }
 
 // function to connect and reconnect as necessary to the MQTT server.
