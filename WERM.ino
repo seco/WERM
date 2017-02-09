@@ -37,6 +37,11 @@ WiFiClient client;
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_USERNAME, AIO_KEY);
 
+Adafruit_MQTT_Subscribe moveForward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/moveForward");
+Adafruit_MQTT_Subscribe moveBackward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/moveBackward");
+Adafruit_MQTT_Subscribe turnLeft = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/turnLeft");
+Adafruit_MQTT_Subscribe turnRight = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/turnRight");
+
 /*Feed*/
 Adafruit_MQTT_Subscribe testForward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testForward");
 Adafruit_MQTT_Subscribe testBackward = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/testBackward");
@@ -91,6 +96,10 @@ void setup() {
   Serial.println("IP address: "); Serial.println(WiFi.localIP());
   
   //Setup the MQTT subscription
+  mqtt.subscribe(&moveForward);
+  mqtt.subscribe(&moveBackward);
+  mqtt.subscribe(&turnLeft);
+  mqtt.subscribe(&turnRight);
   mqtt.subscribe(&testForward);
   mqtt.subscribe(&testBackward);
   mqtt.subscribe(&testYawLeft);
@@ -105,8 +114,43 @@ void loop() {
   //wait for incoming subscription packets subloop
   Adafruit_MQTT_Subscribe *subscription;
   while ((subscription = mqtt.readSubscription(5000))) {
+    Serial.println("Packet Received!");
     //note: using a switch loop does not work, must use if/else
-    if (subscription == &testForward) {
+      //alexa controlled
+    if (subscription == &moveForward) {
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+      digitalWrite(COMMON_LEG2_PIN, HIGH); //high
+      analogWrite(PWM_MOTOR_PIN, 1000);
+      delay(2000);
+      analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
+    } else if (subscription == &moveBackward) {
+      digitalWrite(LEG1_MOTOR1_PIN, LOW); //high
+      digitalWrite(LEG1_MOTOR2_PIN, LOW); //high
+      digitalWrite(COMMON_LEG2_PIN, LOW); //low
+      analogWrite(PWM_MOTOR_PIN, 1000);
+      delay(2000);
+      analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
+    } else if (subscription == &turnLeft) {
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);  //high
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+      digitalWrite(COMMON_LEG2_PIN, LOW);  //low
+      analogWrite(PWM_MOTOR_PIN, 1000);
+      delay(2000);
+      analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
+    } else if (subscription == &turnRight) {
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);  //high
+      digitalWrite(COMMON_LEG2_PIN, LOW);  //low
+      analogWrite(PWM_MOTOR_PIN, 1000);
+      delay(2000);
+      analogWrite(PWM_MOTOR_PIN, 0);
+      bufferNull();
+      //user controlled
+    } else if (subscription == &testForward) {
       Serial.print(F("testForward update duration: "));
       Serial.println((char *)testForward.lastread);
       int duration_forward = atoi((const char *)testForward.lastread);
@@ -132,8 +176,8 @@ void loop() {
       Serial.print(F("testYawLeft update duration: "));
       Serial.println((char *)testYawLeft.lastread);
       int duration_left = atoi((const char *)testYawLeft.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
-      digitalWrite(LEG1_MOTOR2_PIN, LOW);  //high
+      digitalWrite(LEG1_MOTOR1_PIN, LOW);  //high
+      digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
       digitalWrite(COMMON_LEG2_PIN, LOW);  //low
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_left);
@@ -143,8 +187,8 @@ void loop() {
       Serial.print(F("testYawRight update duration: "));
       Serial.println((char *)testYawRight.lastread);
       int duration_right = atoi((const char *)testYawRight.lastread);
-      digitalWrite(LEG1_MOTOR1_PIN, LOW);  //high
-      digitalWrite(LEG1_MOTOR2_PIN, HIGH); //low
+      digitalWrite(LEG1_MOTOR1_PIN, HIGH); //low
+      digitalWrite(LEG1_MOTOR2_PIN, LOW);  //high
       digitalWrite(COMMON_LEG2_PIN, LOW);  //low
       analogWrite(PWM_MOTOR_PIN, 1000);
       delay(duration_right);
