@@ -46,4 +46,4 @@ Within WERM.ino, near the top under '/**MQTT**/', the MQTT account can be edited
 ###Wifi
 Within WERM.ino, near the top under '/**WIFI**/', add the details for a local wifi details by editing the variables for SSID and password.
 ###Breadboard Wiring
-![Wiring](https://i28i.imgup.net/WERMWiring4253.jpg "WERM Wiring")
+![Wiring](https://raw.githubusercontent.com/yomafacio/WERM/master/WERM%20Wiring.jpg "WERM Wiring")
